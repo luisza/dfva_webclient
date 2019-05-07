@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^files/', include('dfva_sign_file.urls')),
     url(r'^accounts/login/$', LoginView.as_view(), {'redirect_to': reverse_lazy("dfva_upload")}, name='login'),
     url(r'^logout/$', LogoutView.as_view(next_page=reverse_lazy('home')), name='logout'),
-    url(r'^', include('authorization_management.urls'), name='authorization_management')
+    #url(r'^', include('authorization_management.urls'), name='authorization_management')
 ]
 
 from django.conf import settings

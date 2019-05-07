@@ -6,10 +6,10 @@
 
 {% block content %}
 <form  action="{% url 'file_resume' fileid%}" method="post" id="resume-form" role="form">
-  {% csrf_token %}
+    {% csrf_token %}
   <div class="form-group">
     <label for="resume">Resume</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter resume">
+    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter resume">
     <small id="resume" class="form-text text-muted">There is a resume about the file</small>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>

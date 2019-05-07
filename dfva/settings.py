@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authorization_management',
+    #'authorization_management',
     'chunked_upload',
     'dfva_upload',
     'dfva_sign_file'
@@ -137,9 +137,9 @@ MEDIA_URL = '/media/'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 
-AUTHENTICATION_BACKENDS = (
-    'authorization_management.authBackend.DFVABackend',
-    'django.contrib.auth.backends.ModelBackend'
-)
+# AUTHENTICATION_BACKENDS = (
+#     'authorization_management.authBackend.DFVABackend',
+#     'django.contrib.auth.backends.ModelBackend'
+# )
 
 DEFAULT_LOGGER_NAME = ''

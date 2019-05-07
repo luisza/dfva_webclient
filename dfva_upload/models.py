@@ -2,7 +2,7 @@ from django.db import models
 from chunked_upload.models import ChunkedUpload
 # Create your models here.
 
-FORMATS = ['xml', 'odt', 'ods', 'odb', 'docx', 'xlsx', 'pptx', 'pdf']
+VALIDATE_FORMATs = ['xml', 'odt', 'ods', 'odb', 'docx', 'xlsx', 'pptx', 'pdf']
 
 
 class FileUpload(ChunkedUpload):

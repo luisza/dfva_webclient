@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 # Create your views here.
 
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
-from .models import FileUpload, FORMATS
+from .models import FileUpload
 
 
 class UploadForm(TemplateView):
