@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block heading %}
+    <h2>Resume</h2>
+{% endblock %}
+
+{% block content %}
+<form  action="{% url 'file_resume' fileid%}" method="post" id="resume-form" role="form">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="resume">Resume</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter resume">
+    <small id="resume" class="form-text text-muted">There is a resume about the file</small>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
