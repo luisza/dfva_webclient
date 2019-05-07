@@ -2,8 +2,11 @@
 {% load static %}
 {% block heading %}
     <h2>Warning</h2>
+    <a href="{% url 'dfva_upload'%}" >Back to Upload</a>
 {% endblock %}
 
 {% block content %}
-<p>Warning</p>
+    {% csrf_token %}
+    <input type="hidden" name="fileid" value="{{ fileid }}">
+    <p>Invalid file format</p>
 {% endblock %}

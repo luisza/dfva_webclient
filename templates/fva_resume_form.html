@@ -5,12 +5,17 @@
 {% endblock %}
 
 {% block content %}
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif%}
 <form  action="{% url 'file_resume' fileid%}" method="post" id="resume-form" role="form">
     {% csrf_token %}
   <div class="form-group">
     <label for="resume">Resume</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter resume">
-    <small id="resume" class="form-text text-muted">There is a resume about the file</small>
+    <input type="text" name='resume' class="form-control" id="resume" placeholder="Enter resume">
+    <small  class="form-text text-muted">There is a resume about the file</small>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
