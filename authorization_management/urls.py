@@ -19,12 +19,10 @@
 @license: GPLv3
 '''
 
-from django.conf.urls import url, include
-from authorization_management.authentication import login_with_bccr, consute_firma
-from authorization_management.views import authorize_user_request
+from django.conf.urls import url
+from .authentication import login_with_bccr, consute_firma
 
 urlpatterns = [
-    url(r'^authorize_user_terms', authorize_user_request, name="authorize_terms"),
     url(r"^autenticar$", login_with_bccr, name="login_fd"),
-    url(r"^consute_firma$", consute_firma, name="consute_firma")
+    url(r"^firmar$", consute_firma, name="consute_firma"),
 ]

@@ -20,14 +20,13 @@
 '''
 
 from django.contrib.auth.models import User
-from institution.models import AuthenticateDataRequest
+from .models import AuthorizationRequest
 from django.conf import settings
 
 
 class DFVABackend(object):
-
     def authenticate(self, token=None):
-        Rauth = AuthenticateDataRequest.objects.filter(
+        Rauth = AuthorizationRequest.objects.filter(
             id_transaction=token).first()
         if Rauth and Rauth.received_notification and \
                 Rauth.status == settings.DEFAULT_SUCCESS_BCCR:
@@ -47,4 +46,9 @@ class DFVABackend(object):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            return None
+            pass
+
+
+
+
+

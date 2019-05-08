@@ -31,6 +31,6 @@ class FileUploadCompleteView(ChunkedUploadCompleteView):
         pass
 
     def get_response_data(self, chunked_upload, request):
-        return {'render': reverse('file_resume',
+        return {'render': reverse('file_sign',
                                   kwargs={'fileid': chunked_upload.upload_id})}
 

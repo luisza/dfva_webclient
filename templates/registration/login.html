@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+
+{% block heading %}
+    <link rel="stylesheet" href="{% static 'dfva_html/css/Bccr.Fva.ClienteInterno.Firmador-1.0.2-min.css' %}">
+    <script src="{% static 'dfva_html/js/autenticador-1.0.3-min.js' %}"></script>
+    <script src="{% static 'dfva_html/js/Bccr.Fva.ClienteInterno.Firmador-1.0.3-min.js'%}" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+	<div class="col-md-auto">
+		<div class="card " style="width: 25rem;">
+			<ul class="nav nav-pills" id="logintab" role="tablist">
+				<li class="nav-item"><a class="nav-link active" id="fd-tab"
+					data-toggle="tab" href="#fd" role="tab" aria-controls="home-fd"
+					aria-selected="true">Digital Signature</a></li>
+				<li class="nav-item"><a class="nav-link" id="up-tab"
+					data-toggle="tab" href="#up" role="tab" aria-controls="home-up"
+					aria-selected="true">User/Password</a></li>
+			</ul>
+			<div class="card-body tab-content">
+				
+				<div class="tab-pane fade show active" id="fd" role="tabpanel" aria-labelledby="fd-tab">
+					<img class="card-img-top" width="18em" src="{% static 'dfva_html/Imagenes/Firma.png' %}"
+						alt="Digital signature logo"> <br>
+					<br>
+					<h5 class="card-title">Login with digital signature</h5>
+					<p class="card-text"> To administrate this site you need to use Digital signature</p>
+					<br>
+					<br>
+					<button class="btn btn-primary" id="BotonDeAutenticar"
+						data-fva="true" data-url="{% url 'login_fd' %}"
+						data-dominio="{{ request.scheme }}://{{ request.get_host }}"
+						data-successurl="{% if next %}{{next}}{% else %}/{% endif %}"
+						data-parautenticarse="al Sitio de Verificaci&oacute;n"
+						data-mensajedeerror="No se pudo realizar la autenticaci&oacute;n en el sitio de verificaci&oacute;n."
+						type="button" class="botonVerificacion botonVerificacion-Inicio">
+						Login</button>
+
+				</div>
+
+	
+				<div class="tab-pane " id="up" role="tabpanel" aria-labelledby="up-tab">
+					<h5 class="card-title text-center text-green"Login</h5>
+					<div class="card-text">
+					<form method="post">
+						{% csrf_token %}
+						<table class="table">{{ form }} </table>
+						<input type="hidden" name="next" value="{{next}}" />
+						<br><br>
+						<button class="btn btn-success" type="submit">
+						Login</button>
+					</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+{% endblock %}
+
+{% block javascript %}
+
+    <script src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
+    <script src="{% static 'js/Bccr.Fva.ClienteInterno.Firmador-1.0.3-min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/autenticador-1.0.3-min.js' %}"></script>
+{% endblock %}

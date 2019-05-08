@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from dfva_upload.models import FileUpload, VALIDATE_FORMAT
 from dfva_python.client import Client
 from .models import FileSign
+from authorization_management.utils import get_identification
 # Create your views here.
 
 
@@ -25,16 +26,18 @@ def manage_resume_view(request, fileid):
     if request.method == 'GET':
         render_view = get_resume_template(file_uploaded)
         return render(request, render_view, {'fileid': fileid})
+
     elif request.method == 'POST':
         client = Client()
         file_content = file_uploaded.get_uploaded_file().read()
         file_extend = file_uploaded.filename.rsplit('.', 1)[1]
+        authid = request.session['authenticatedata']
 
         resume = request.POST.get("resume")
         reason = request.POST.get("reason", None)
         place = request.POST.get("place", None)
 
-        sign_resp = client.sign('04-0212-0119',
+        sign_resp = client.sign(get_identification(request, authid),
                                 file_content,
                                 resume,
                                 _format=VALIDATE_FORMAT.get(file_extend),
@@ -54,8 +57,7 @@ def manage_resume_view(request, fileid):
 
                 file_sign.save()
                 render_download = True
-                # TODO: line for test
-                client.sign_delete(data['id_transaction'])
+                # client.sign_delete(data['id_transaction'])
 
         if render_download:
             return render(request, 'fva_download.html', {'fileid': fileid, 'filename': file_uploaded.filename})
@@ -76,3 +78,9 @@ def manage_download(request, fileid):
     else:
         raise Http404()
 
+
+def manage_sign(request, fileid):
+    file_uploaded = get_object_or_404(FileUpload, upload_id=fileid)
+    if request.method == 'GET':
+        return render(request, 'firmar.html', {'fileid': fileid, 'filename': file_uploaded.filename})
+    raise Http404()

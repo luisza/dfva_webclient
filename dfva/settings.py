@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'authorization_management',
+    'authorization_management',
     'chunked_upload',
     'dfva_upload',
     'dfva_sign_file'
@@ -137,9 +137,23 @@ MEDIA_URL = '/media/'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 
-# AUTHENTICATION_BACKENDS = (
-#     'authorization_management.authBackend.DFVABackend',
-#     'django.contrib.auth.backends.ModelBackend'
-# )
+DEFAULT_LOGGER_NAME = 'dfva'
 
-DEFAULT_LOGGER_NAME = ''
+
+EXPIRED_DELTA = 5  # in minutes
+LOGIN_REDIRECT_URL = '/'
+FVA_HOST = 'http://bccr.fva.cr/'
+DEFAULT_BUSSINESS = 1
+DEFAULT_ENTITY = 1
+LOGGING_ENCRYPTED_DATA = False
+DFVA_REMOVE_AUTHENTICATION = 5  # minutes
+DFVA_REMOVE_SIGN = 20  # minutes
+DFVA_PERSON_SESSION = 25
+
+
+DEFAULT_SUCCESS_BCCR = 0
+AUTHENTICATION_BACKENDS = (
+    'authorization_management.authBackend.DFVABackend',
+    'django.contrib.auth.backends.ModelBackend'
+
+)

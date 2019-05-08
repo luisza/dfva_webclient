@@ -19,16 +19,16 @@
 @license: GPLv3
 '''
 
-from django.http.response import JsonResponse, Http404, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from pyfva.clientes.autenticador import ClienteAutenticador
-from django.conf import settings
+import json
 import logging
 from django.views.decorators.http import require_http_methods
-import json
-from institution.models import AuthenticateDataRequest
-from django.utils import timezone
+from pyfva.clientes.autenticador import ClienteAutenticador
+from django.http.response import JsonResponse, Http404, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
+from .models import AuthenticateDataRequest
+from django.utils import timezone
+from django.conf import settings
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER_NAME)
 
@@ -40,6 +40,8 @@ def login_with_bccr(request):
     if identification:
         authclient = ClienteAutenticador(settings.DEFAULT_BUSSINESS,
                                          settings.DEFAULT_ENTITY)
+
+        print(authclient)
         if authclient.validar_servicio():
             data = authclient.solicitar_autenticacion(
                 identification)
@@ -48,20 +50,14 @@ def login_with_bccr(request):
             logger.warning("Auth BCCR not available")
             data = authclient.DEFAULT_ERROR
 
-        # obj = AuthenticateDataRequest.objects.create(
-        #     notification_url='N/D',
-        #     identification=identification,
-        #     request_datetime=timezone.now(),
-        #     code=data['codigo_verificacion'] or 'N/D',
-        #     status=data['codigo_error'],
-        #     status_text=data['texto_codigo_error'],
-        #     expiration_datetime=timezone.now(
-        #     ) - timezone.timedelta(int(data['tiempo_maximo'])),
-        #     id_transaction=int(data['id_solicitud']),
-        #     duration=data['tiempo_maximo']
-        # )
+        obj = AuthenticateDataRequest.objects.create(
+            identification=identification,
+            request_datetime=timezone.now(),
+            expiration_datetime=timezone.now(
+            ) - timezone.timedelta(int(data['tiempo_maximo'])),
+        )
 
-        request.session['authenticatedata'] = ''
+        request.session['authenticatedata'] = obj.pk
 
         success = data['codigo_error'] == settings.DEFAULT_SUCCESS_BCCR
         return JsonResponse({
@@ -82,30 +78,11 @@ def login_with_bccr(request):
 def consute_firma(request):
     callback = request.GET.get('callback')
     pk = request.GET.get('IdDeLaSolicitud', '')
-    authdata = AuthenticateDataRequest.objects.filter(
-        id_transaction=pk).first()
 
-    sessionkey = None
-    if 'authenticatedata' in request.session:
-        sessionkey = request.session['authenticatedata']
-
-    if authdata is None or authdata.pk != sessionkey:
-        return HttpResponse(
-            "%s(%s)" % (
-                callback,
-                json.dumps(
-                    {"ExtensionData": {},
-                     "DebeMostrarElError": True,
-                     "DescripcionDelError": "Transacción inexistente",
-                     "FueExitosa": False,
-                     "SeRealizo": True}
-                )
-            )
-        )
-
-    status = authdata.status == settings.DEFAULT_SUCCESS_BCCR
-    realizada = authdata.received_notification
-    if status and realizada:
+    status = True
+    status_text = ""
+    realizada = 0
+    if pk and callback:
         request.session.pop('authenticatedata')
         user = authenticate(token=pk)
         if user is not None:
@@ -116,9 +93,10 @@ def consute_firma(request):
             json.dumps(
                 {"ExtensionData": {},
                  "DebeMostrarElError": not status,
-                 "DescripcionDelError": authdata.status_text,
+                 "DescripcionDelError": status_text,
                  "FueExitosa": status,
                  "SeRealizo": realizada}
             )
         )
     )
+
