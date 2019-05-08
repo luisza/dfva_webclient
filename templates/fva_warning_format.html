@@ -1,8 +1,11 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% block heading %}
-    <h2>Warning</h2>
     <a href="{% url 'dfva_upload'%}" >Back to Upload</a>
+{% endblock %}
+
+{% block title %}
+    <a>Warning</a>
 {% endblock %}
 
 {% block content %}

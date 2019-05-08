@@ -1,15 +1,20 @@
 {% extends 'layout.html' %}
 {% load static %}
-{% block heading %}
-    <h2>Download</h2>
-    <a href="{% url 'dfva_upload'%}" >Back to Upload</a>
+{% block title %}
+    <a>Download</a>
 {% endblock %}
 
 {% block content %}
-    {% csrf_token %}
-    <input type="hidden" name="fileid" value="{{ fileid }}">
-   <button type="submit" class="btn btn-primary" onclick="download()">Download {{ filename }}</button>
-
+    <form>
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="hidden" name="fileid" value="{{ fileid }}">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" onclick="download()">Download {{ filename }}</button>
+        </div>
+    </form>
+    <a href="{% url 'dfva_upload'%}" >Back to Upload</a>
 <script>
     function download(){
         return $.ajax({
