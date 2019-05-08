@@ -12,7 +12,7 @@
 {% block content %}
 <div class="row justify-content-md-center">
 	<div class="col-md-auto">
-		<div class="card " style="width: 25rem;">
+		<div class="card " style="width: 28rem;">
 			<ul class="nav nav-pills" id="logintab" role="tablist">
 				<li class="nav-item"><a class="nav-link active" id="fd-tab"
 					data-toggle="tab" href="#fd" role="tab" aria-controls="home-fd"
@@ -24,7 +24,7 @@
 			<div class="card-body tab-content">
 				
 				<div class="tab-pane fade show active" id="fd" role="tabpanel" aria-labelledby="fd-tab">
-					<img class="card-img-top" width="18em" src="{% static 'dfva_html/Imagenes/Firma.png' %}"
+					<img class="card-img-top" width="18em" src="{% static 'Imagenes/Firma.png' %}"
 						alt="Digital signature logo"> <br>
 					<br>
 					<h5 class="card-title">Login with digital signature</h5>
@@ -32,11 +32,13 @@
 					<br>
 					<br>
 					<button class="btn btn-primary" id="BotonDeAutenticar"
-						data-fva="true" data-url="{% url 'login_fd' %}"
+						data-fva="true"
+						data-url="{% url 'login_fd' %}"
 						data-dominio="{{ request.scheme }}://{{ request.get_host }}"
+						data-urlconsultafirma ="{% url 'consute_firma' %}"
 						data-successurl="{% if next %}{{next}}{% else %}/{% endif %}"
-						data-parautenticarse="al Sitio de Verificaci&oacute;n"
-						data-mensajedeerror="No se pudo realizar la autenticaci&oacute;n en el sitio de verificaci&oacute;n."
+						data-parautenticarse="al Sitio de Verificación"
+						data-mensajedeerror="No se pudo realizar la autenticación en el sitio de verificación."
 						type="button" class="botonVerificacion botonVerificacion-Inicio">
 						Login</button>
 
@@ -51,7 +53,7 @@
 						<table class="table">{{ form }} </table>
 						<input type="hidden" name="next" value="{{next}}" />
 						<br><br>
-						<button class="btn btn-success" type="submit">
+						<button class="btn btn-primary" type="submit">
 						Login</button>
 					</form>
 					</div>

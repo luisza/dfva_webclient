@@ -1,9 +1,11 @@
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from dfva_upload.models import FileUpload, VALIDATE_FORMAT
+from django.contrib.auth.decorators import login_required
+from authorization_management.utils import get_identification
 from dfva_python.client import Client
 from .models import FileSign
-from authorization_management.utils import get_identification
+
 # Create your views here.
 
 
@@ -21,6 +23,7 @@ def get_resume_template(file_uploaded):
     return render_view
 
 
+@login_required
 def manage_resume_view(request, fileid):
     file_uploaded = get_object_or_404(FileUpload, upload_id=fileid)
     if request.method == 'GET':
@@ -31,8 +34,7 @@ def manage_resume_view(request, fileid):
         client = Client()
         file_content = file_uploaded.get_uploaded_file().read()
         file_extend = file_uploaded.filename.rsplit('.', 1)[1]
-        authid = request.session['authenticatedata']
-
+        authid = request.session.get('authenticatedata')
         resume = request.POST.get("resume")
         reason = request.POST.get("reason", None)
         place = request.POST.get("place", None)
@@ -43,9 +45,8 @@ def manage_resume_view(request, fileid):
                                 _format=VALIDATE_FORMAT.get(file_extend),
                                 reason=reason,
                                 place=place)
-
         render_download = False
-        if sign_resp.get('id_transaction'):
+        if sign_resp.get('id_transaction', None):
             data = client.sign_check(sign_resp['id_transaction'])
             if data.get('id_transaction'):
                 file_sign = FileSign()
@@ -68,9 +69,9 @@ def manage_resume_view(request, fileid):
         raise Http404()
 
 
+@login_required
 def manage_download(request, fileid):
     file_uploaded = get_object_or_404(FileSign, uploaded__upload_id=fileid)
-    print(file_uploaded.uploaded.__dict__)
     if file_uploaded.sign_document:
         file_data = 'data:application/xml;base64,{}'.format(file_uploaded.sign_document)
         # file_uploaded.delete()

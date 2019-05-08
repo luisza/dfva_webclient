@@ -27,8 +27,11 @@ from django.http.response import JsonResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 from .models import AuthenticateDataRequest
+from django.shortcuts import render
 from django.utils import timezone
 from django.conf import settings
+from dfva_python.client import Client
+import random
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER_NAME)
 
@@ -38,53 +41,66 @@ logger = logging.getLogger(settings.DEFAULT_LOGGER_NAME)
 def login_with_bccr(request):
     identification = request.POST.get('Identificacion', '')
     if identification:
-        authclient = ClienteAutenticador(settings.DEFAULT_BUSSINESS,
-                                         settings.DEFAULT_ENTITY)
-
-        print(authclient)
-        if authclient.validar_servicio():
-            data = authclient.solicitar_autenticacion(
-                identification)
-
-        else:
-            logger.warning("Auth BCCR not available")
-            data = authclient.DEFAULT_ERROR
+        client = Client()
+        auth_resp = client.authenticate(identification)
+        data = client.authenticate_check(auth_resp['id_transaction'])
 
         obj = AuthenticateDataRequest.objects.create(
             identification=identification,
+            status=data['status'],
+            status_text=data['status_text'],
+            received_notification=data['received_notification'],
             request_datetime=timezone.now(),
-            expiration_datetime=timezone.now(
-            ) - timezone.timedelta(int(data['tiempo_maximo'])),
+            expiration_datetime=data['expiration_datetime'],
         )
 
         request.session['authenticatedata'] = obj.pk
 
-        success = data['codigo_error'] == settings.DEFAULT_SUCCESS_BCCR
+        success = data['status'] == settings.DEFAULT_SUCCESS_BCCR
         return JsonResponse({
             'FueExitosaLaSolicitud': success,
             'TiempoMaximoDeFirmaEnSegundos': 240,
             'TiempoDeEsperaParaConsultarLaFirmaEnSegundos': 2,
-            'CodigoDeVerificacion': data['codigo_verificacion'],
-            'IdDeLaSolicitud': data['id_solicitud'],
+            'CodigoDeVerificacion': data['code'],
+            'IdDeLaSolicitud': data['identification'],
             'DebeMostrarElError': not success,
-            'DescripcionDelError': data['texto_codigo_error'],
+            'DescripcionDelError': data['status_text'],
             'ResumenDelDocumento': data['resumen'] if "resumen" in data else ""
 
         })
-
     return Http404()
 
 
+@csrf_exempt
 def consute_firma(request):
     callback = request.GET.get('callback')
-    pk = request.GET.get('IdDeLaSolicitud', '')
+    identification = request.GET.get('IdDeLaSolicitud', '')
+    authdata = AuthenticateDataRequest.objects.filter(
+        identification=identification).order_by('-request_datetime').first()
 
-    status = True
-    status_text = ""
-    realizada = 0
-    if pk and callback:
-        request.session.pop('authenticatedata')
-        user = authenticate(token=pk)
+    sessionkey = None
+    if 'authenticatedata' in request.session:
+        sessionkey = request.session['authenticatedata']
+
+    if authdata is None or authdata.pk != sessionkey:
+        return HttpResponse(
+            "%s(%s)" % (
+                callback,
+                json.dumps(
+                    {"ExtensionData": {},
+                     "DebeMostrarElError": True,
+                     "DescripcionDelError": "Transacción inexistente",
+                     "FueExitosa": False,
+                     "SeRealizo": True}
+                )
+            )
+        )
+
+    status = authdata.status == settings.DEFAULT_SUCCESS_BCCR
+    realizada = authdata.received_notification
+    if status and realizada:
+        # request.session.pop('authenticatedata')
+        user = authenticate(token=identification)
         if user is not None:
             login(request, user)
     return HttpResponse(
@@ -93,10 +109,9 @@ def consute_firma(request):
             json.dumps(
                 {"ExtensionData": {},
                  "DebeMostrarElError": not status,
-                 "DescripcionDelError": status_text,
+                 "DescripcionDelError": authdata.status_text,
                  "FueExitosa": status,
                  "SeRealizo": realizada}
             )
         )
-    )
-
+)

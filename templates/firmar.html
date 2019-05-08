@@ -18,8 +18,9 @@
         <div class="form-group">
             <button id="BotonDeFirmar"
                     data-fva = "true"
-                    data-url="/firmar"
+                    data-url="{% url 'sign_fd'%}"
                     data-dominio="{{ request.scheme }}://{{ request.get_host }}"
+                    data-urlconsultafirma="{% url 'consute_firma' %}"
                     data-successurl = "{% url 'file_resume' fileid%}"
                     data-mensajedeerror = "No se pudo realizar la firma en el sitio."
                     type="button" class="botonVerificacion botonVerificacion-Inicio  btn btn-primary upload-action">Firmar {{ filename }}

@@ -6,7 +6,9 @@
 
 {% block content %}
 <ul>
-
+	{% if not user.is_authenticated %}
+	<li><a href="{% url 'login'%}">Iniciar sesión</a></li>
+	{% endif %}
 	<li><a href="{% url 'dfva_upload'%}">Cargar documento</a></li>
 </ul>
 {% endblock %}

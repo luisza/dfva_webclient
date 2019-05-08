@@ -21,8 +21,11 @@
 
 from django.conf.urls import url
 from .authentication import login_with_bccr, consute_firma
+from .views import home
 
 urlpatterns = [
+    url(r'^$', home, name='home'),
     url(r"^autenticar$", login_with_bccr, name="login_fd"),
-    url(r"^firmar$", consute_firma, name="consute_firma"),
+    url(r"^consute_firma", consute_firma, name="consute_firma"),
+    url(r"^firmar", login_with_bccr, name="sign_fd"),
 ]

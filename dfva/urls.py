@@ -20,12 +20,10 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.conf.urls.static import static
 from django.urls.base import reverse_lazy
 from django.conf import settings
-from .views import home
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', home, name='home'),
     url(r'^', include('authorization_management.urls')),
     url(r'^files/', include('dfva_upload.urls')),
     url(r'^files/', include('dfva_sign_file.urls')),

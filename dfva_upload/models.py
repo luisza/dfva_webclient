@@ -2,7 +2,9 @@ from django.db import models
 from chunked_upload.models import ChunkedUpload
 # Create your models here.
 
-VALIDATE_FORMAT = {'xml': 'xml_cofirma',
+VALIDATE_FORMAT = {'contrafirma': 'xml_contrafirma,',
+                   'cofirma': 'xml_cofirma,',
+                   'xml': 'cofirma',  # Todo: It should be confirmed
                    'odt': 'odf',
                    'ods': 'odf',
                    'odb': 'odf',

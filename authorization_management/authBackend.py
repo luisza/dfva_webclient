@@ -20,14 +20,14 @@
 '''
 
 from django.contrib.auth.models import User
-from .models import AuthorizationRequest
+from .models import AuthenticateDataRequest
 from django.conf import settings
 
 
 class DFVABackend(object):
     def authenticate(self, token=None):
-        Rauth = AuthorizationRequest.objects.filter(
-            id_transaction=token).first()
+        Rauth = AuthenticateDataRequest.objects.filter(
+            identification=token).order_by('-request_datetime').first()
         if Rauth and Rauth.received_notification and \
                 Rauth.status == settings.DEFAULT_SUCCESS_BCCR:
             try:

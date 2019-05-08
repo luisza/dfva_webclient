@@ -21,7 +21,6 @@
 
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 from django.core.validators import RegexValidator
 from dateutil.relativedelta import relativedelta
@@ -30,27 +29,6 @@ from dateutil.relativedelta import relativedelta
 identification_validator = RegexValidator(
     r'"(^[1|5]\d{11}$)|(^\d{2}-\d{4}-\d{4}$)"',
     message=_("Debe tener el formato 08-8888-8888 para nacionales o 500000000000 o 100000000000"))
-
-
-class AuthorizationRequest(models.Model):
-    user = models.ForeignKey(User)
-    request_date = models.DateTimeField(auto_now_add=True)
-    last_modification = models.DateTimeField(auto_now=True)
-    authorized = models.BooleanField(default=False)
-    finished = models.BooleanField(default=False)
-    who_authorized = models.ForeignKey(User, related_name="who_authorized",
-                                       null=True, blank=True)
-    observations = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        status = _("Denied or in check")
-        if self.autorized:
-            status = _("Authorized")
-        return self.user.username + " ( "+status+" )"
-
-    class Meta:
-        verbose_name = _('Authorization request')
-        verbose_name_plural = _('Authorizations request')
 
 
 class AuthenticateDataRequest(models.Model):
@@ -62,12 +40,15 @@ class AuthenticateDataRequest(models.Model):
     # '%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'
     request_datetime = models.DateTimeField(
         help_text="""'%Y-%m-%d %H:%M:%S',   es decir  '2006-10-25 14:30:59'""")
+    status_text = models.CharField(max_length=256, default='n/d')
+    status = models.IntegerField(default=0)
+    received_notification = models.BooleanField(default=False)
 
     def __str__(self):
         return repr(self)
 
     def __repr__(self):
-        return "AuthenticateDataRequest(%d)  %s %r %d" % (
+        return "AuthenticateDataRequest(%s)  " % (
             self.identification,
         )
 
