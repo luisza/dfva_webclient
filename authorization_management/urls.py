@@ -20,12 +20,16 @@
 '''
 
 from django.conf.urls import url
-from .authentication import login_with_bccr, consute_firma
-from .views import home
+from .authentication import login_with_bccr, consute_firma, sign_with_bccr
+from django.contrib.auth.views import LoginView
+from django.urls.base import reverse_lazy
+from .views import home, logout_view
 
 urlpatterns = [
     url(r'^$', home, name='home'),
-    url(r"^autenticar$", login_with_bccr, name="login_fd"),
-    url(r"^consute_firma", consute_firma, name="consute_firma"),
-    url(r"^firmar", login_with_bccr, name="sign_fd"),
+    url(r"^authenticate$", login_with_bccr, name="login_fd"),
+    url(r"^check_sign$", consute_firma, name="consute_firma"),
+    url(r"^sign/(?P<fileid>[0-9A-Za-z_\-]+)/$", sign_with_bccr, name="sign_fd"),
+    url(r'^logout/$', logout_view, name='logout'),
+    url(r'^accounts/login/$', LoginView.as_view(), {'redirect_to': reverse_lazy("dfva_upload")}, name='login'),
 ]

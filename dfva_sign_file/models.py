@@ -4,9 +4,10 @@ from dfva_upload.models import FileUpload
 
 
 class FileSign(models.Model):
-    resume = models.CharField(max_length=255, blank=True, null=True)
-    reason = models.CharField(max_length=100, blank=True, null=True)
-    place = models.CharField(max_length=100, blank=True, null=True)
+    format = models.CharField(max_length=15, blank=True, null=True)
+    resume = models.CharField(max_length=250, blank=True, null=True)
+    reason = models.CharField(max_length=125, blank=True, null=True)
+    place = models.CharField(max_length=150, blank=True, null=True)
     sign_document = models.TextField(blank=True, null=True)
     uploaded = models.ForeignKey(FileUpload, null=False, blank=False, on_delete=models.CASCADE)
 

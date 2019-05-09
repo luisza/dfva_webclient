@@ -1,44 +1,52 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% block title %}
-    <a>Download</a>
+    <a>Descarga</a>
 {% endblock %}
 
 {% block content %}
-    <form>
-        {% csrf_token %}
-        <div class="form-group">
-            <input type="hidden" name="fileid" value="{{ fileid }}">
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" onclick="download()">Download {{ filename }}</button>
-        </div>
-    </form>
-    <a href="{% url 'dfva_upload'%}" >Back to Upload</a>
-<script>
-    function download(){
-        return $.ajax({
-                    url: "{% url 'file_download' fileid %}",
-                    type: 'GET',
-                    cache: false,
-                    async: true,
-                    dataType: 'text',
-                    mimeType: 'text/plain; charset=x-user-defined',
-                    beforeSend: function (xhr) {
-                         xhr.setRequestHeader('Authorization', 'Token {{ csrf_token }}');
-                    },
-                    success: function(response, status, request) {
-                                var link = document.createElement("a");
-                                link.setAttribute("href", response);
-                                link.setAttribute("download", "{{ filename }}.xml");
-                                link.style.visibility = 'hidden';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                window.location.href = "{% url 'home' %}";
-                    }
-         });
-    }
 
-</script>
+        <p>Nombre de archivo: <span> {{ file_signed.uploaded.filename }}</span></p>
+        {% if file_signed.reason  %}
+            <p>Razón: <span> {{ file_signed.reason }}</span></p>
+        {% endif %}
+        {% if file_signed.place  %}
+            <p>Lugar: <span> {{ file_signed.place }}</span></p>
+        {% endif %}
+        <p>Resumen: <span> {{ file_signed.resume }}</span></p>
+        <p>Formato: <span> {{ file_signed.format }}</span></p>
+        <hr class="mb-4">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" onclick="download()">Descargar {{ file_signed.uploaded.filename }}</button>
+        </div>
+    <a href="{% url 'dfva_upload'%}" ></a>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        function download(){
+            return $.ajax({
+                        url: "{% url 'sign_document_download' fileid %}",
+                        type: 'GET',
+                        cache: false,
+                        async: true,
+                        dataType: 'text',
+                        mimeType: 'text/plain; charset=x-user-defined',
+                        beforeSend: function (xhr) {
+                             xhr.setRequestHeader('Authorization', 'Token {{ csrf_token }}');
+                        },
+                        success: function(response, status, request) {
+                                    var link = document.createElement("a");
+                                    link.setAttribute("href", response);
+                                    link.setAttribute("download", "{{ file_signed.uploaded.filename  }}.xml");
+                                    link.style.visibility = 'hidden';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                    window.location.href = "{% url 'home' %}";
+                        }
+             });
+        }
+
+    </script>
 {% endblock %}

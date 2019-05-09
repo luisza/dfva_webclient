@@ -5,10 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<ul>
+	<p> Este proyecto prentede ser una herramienta de firmado de archivos con los  siguientes formatos:</p>
+	<ul>
+		<li>XML (transacciones)</li>
+		<li>ODF</li>
+		<li>MS Office</li>
+		<li>PDF.</li>
+	</ul>
+	<br>
 	{% if not user.is_authenticated %}
-	<li><a href="{% url 'login'%}">Iniciar sesión</a></li>
+		<p> El registro de la firma digital es requerido. Ingrese en
+		<a href="{% url 'login'%}">Iniciar sesión</a>
+		para solicitar la autenticación
+		</p>
 	{% endif %}
-	<li><a href="{% url 'dfva_upload'%}">Cargar documento</a></li>
-</ul>
+	{% if user.is_authenticated %}
+		<p>Enlace al cargado de archivos:</p>
+		<ul>
+				<li><a href="{% url 'dfva_upload'%}">Cargar documento</a></li>
+		</ul>
+{% endif %}
 {% endblock %}

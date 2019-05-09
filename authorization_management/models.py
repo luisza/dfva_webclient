@@ -59,7 +59,7 @@ class AuthenticateDataRequest(models.Model):
         return "%d:%d:%d" % (ttime.hours, ttime.minutes, ttime.seconds)
 
     class Meta:
-        ordering = ('request_datetime',)
+        ordering = ('-request_datetime',)
         permissions = (
             ("view_authenticatedatarequest",
              "Can see available Authenticate Data Request"),
