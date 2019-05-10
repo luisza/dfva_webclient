@@ -14,11 +14,12 @@ def manage_resume_view(request, fileid):
     if request.method == 'GET':
         filename = file_uploaded.filename.lower()
 
-        last_resume = file_uploaded.filesign_set.latest('updated_on') if file_uploaded.filesign_set else None
-        return render(request, 'fva_resume_form.html', {'fileid': fileid,
-                                                        'is_pdf': filename.endswith('.pdf'),
-                                                        'file_uploaded': file_uploaded,
-                                                        'file_sign': last_resume})
+        file_sign = FileSign.objects.filter(uploaded__upload_id=fileid)
+        last_resume = file_sign.latest('updated_on') if file_sign else None
+        return render(request, 'fva_resume.html', {'fileid': fileid,
+                                                   'is_pdf': filename.endswith('.pdf'),
+                                                   'file_uploaded': file_uploaded,
+                                                   'file_sign': last_resume})
 
     elif request.method == 'POST':
         file_extend = file_uploaded.filename.rsplit('.', 1)[1]
@@ -41,31 +42,36 @@ def manage_resume_view(request, fileid):
 
 @login_required
 def manage_download(request, fileid):
-    file_sign = get_object_or_404(FileSign, uploaded__upload_id=fileid,  uploaded__user=request.user)
     if request.method == 'GET':
+        file_sign = FileSign.objects.filter(uploaded__upload_id=fileid,
+                                            uploaded__user=request.user).latest('updated_on')
         # when the file hasn't a sign_document it should be signed before
-        if not file_sign.sign_document:
-            return redirect(reverse('file_resume', kwargs={'fileid': fileid}))
-
-        return render(request, 'fva_download.html', {'fileid': fileid, 'file_signed': file_sign})
+        if file_sign:
+            if not file_sign.resume:
+                return redirect(reverse('file_resume', kwargs={'fileid': fileid}))
+            return render(request, 'fva_download.html', {'fileid': fileid, 'file_signed': file_sign})
     raise Http404()
 
 
 @login_required
 def manage_sign(request, fileid):
-    file_sign = get_object_or_404(FileSign, uploaded__upload_id=fileid, uploaded__user=request.user)
     if request.method == 'GET':
-        return render(request, 'firmar.html', {'fileid': fileid,
-                                               'filename': file_sign.uploaded.filename,
-                                               'file_sign': file_sign})
+        file_sign = FileSign.objects.filter(uploaded__upload_id=fileid,
+                                            uploaded__user=request.user).latest('updated_on')
+        if file_sign:
+            return render(request, 'fva_firmar.html', {'fileid': fileid,
+                                                       'filename': file_sign.uploaded.filename,
+                                                       'file_sign': file_sign})
     raise Http404()
 
 
 @login_required
 def sign_document_download(request, fileid):
-    file_sign = get_object_or_404(FileSign, uploaded__upload_id=fileid, uploaded__user=request.user)
     if request.method == 'GET':
-        if file_sign.sign_document:
-            file_data = 'data:application/xml;base64,{}'.format(file_sign.sign_document)
+        file_sign = FileSign.objects.filter(uploaded__upload_id=fileid,
+                                            uploaded__user=request.user).latest('updated_on')
+        if file_sign and file_sign.sign_document:
+            file_data = 'data:{0};base64,{1}'.format(file_sign.uploaded.get_content_type(), file_sign.sign_document)
             return HttpResponse(file_data)
+        return redirect(reverse('file_sign', kwargs={'fileid': fileid}))
     raise Http404()

@@ -38,7 +38,7 @@
                         success: function(response, status, request) {
                                     var link = document.createElement("a");
                                     link.setAttribute("href", response);
-                                    link.setAttribute("download", "{{ file_signed.uploaded.filename  }}.xml");
+                                    link.setAttribute("download", "{{ file_signed.uploaded.filename}}");
                                     link.style.visibility = 'hidden';
                                     document.body.appendChild(link);
                                     link.click();

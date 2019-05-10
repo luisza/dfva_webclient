@@ -7,7 +7,7 @@ from .models import FileUpload
 
 
 class UploadForm(TemplateView):
-    template_name = 'dfva_upload_form.html'
+    template_name = 'dfva_upload.html'
 
 
 class FileUploadView(ChunkedUploadView):

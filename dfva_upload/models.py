@@ -1,4 +1,5 @@
 from chunked_upload.models import ChunkedUpload
+import mimetypes
 # Create your models here.
 
 VALIDATE_FORMAT = {'contrafirma': 'xml_contrafirma',
@@ -12,4 +13,6 @@ VALIDATE_FORMAT = {'contrafirma': 'xml_contrafirma',
 
 
 class FileUpload(ChunkedUpload):
-    pass
+    def get_content_type(self):
+        content_type, _ = mimetypes.guess_type(self.filename)
+        return content_type

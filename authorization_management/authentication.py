@@ -138,7 +138,8 @@ def consute_firma(request):
 @login_required
 @require_http_methods(["POST"])
 def sign_with_bccr(request, fileid):
-    file_sign = get_object_or_404(FileSign, uploaded__upload_id=fileid)
+    file_sign = FileSign.objects.filter(uploaded__upload_id=fileid,
+                                        uploaded__user=request.user).latest('updated_on')
 
     sessionkey = None
     if 'authenticatedata' in request.session:
@@ -147,6 +148,11 @@ def sign_with_bccr(request, fileid):
 
     data = call_sign(authdata.identification, file_sign)
     success = data['status'] == settings.DEFAULT_SUCCESS_BCCR
+
+    # we didn't get a sign document
+    if success and not data['sign_document']:
+        success = not success
+
     return JsonResponse({
             'FueExitosaLaSolicitud': success,
             'TiempoMaximoDeFirmaEnSegundos': 240,

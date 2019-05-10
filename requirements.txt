@@ -1,3 +1,2 @@
 django-chunked-upload
 dfva-python
-pyfva
