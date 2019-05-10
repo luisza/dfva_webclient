@@ -20,7 +20,6 @@ class FileUploadView(ChunkedUploadView):
 
 
 class FileUploadCompleteView(ChunkedUploadCompleteView):
-
     model = FileUpload
 
     def check_permissions(self, request):

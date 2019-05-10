@@ -1,9 +1,8 @@
-from django.db import models
 from chunked_upload.models import ChunkedUpload
 # Create your models here.
 
-VALIDATE_FORMAT = {'contrafirma': 'contrafirma,',
-                   'cofirma': 'xml_cofirma,',
+VALIDATE_FORMAT = {'contrafirma': 'xml_contrafirma',
+                   'cofirma': 'xml_cofirma',
                    'odt': 'odf',
                    'ods': 'odf',
                    'odb': 'odf',

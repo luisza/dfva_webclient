@@ -1,5 +1,5 @@
 <!doctype html>
-{% load static %}
+{% load static home_tag%}
 <html>
     <head>
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -13,7 +13,7 @@
         <div class="wrapper">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <title>DFVA Web Client</title>
-                <a class="navbar-brand" href="{% url 'home'%}">DFVA Web Client{% block title %}{% endblock %}</a>
+                <a class="navbar-brand" href="{% url 'home'%}">DFVA Web Client</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -37,21 +37,13 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-8">
+                                <h5 class="d-flex mb-3">
+                                      {% block title %}{% endblock %}
+                                </h5>
                                 {% block content %}{% endblock %}
                             </div>
                             <div class="col-4">
                                 {% if user.is_authenticated %}
-                                    <h5 class="d-flex mb-3">
-                                        Últimos archivos:
-                                    </h5>
-                                    <ul class="list-group mb-3">
-                                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between lh-condensed">
-
-                                        </li>
-                                    </ul>
                                     <div class="card p-2">
                                         <h5 class="d-flex mb-3">
                                                Enlances:
@@ -61,6 +53,22 @@
                                             <li><a href="{% url 'dfva_upload'%}">Cargar documento</a></li>
                                         </ul>
                                     </div>
+                                    <br>
+                                    <h5 class="d-flex mb-3">
+                                        Últimos archivos:
+                                    </h5>
+                                    <ul class="list-group mb-3">
+                                        {%  get_last_files as files %}
+                                        {% for f in files %}
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                                    <a href="{% url 'file_resume' f.upload_id %}" >{{ f.filename }}</a>
+                                            </li>
+                                        {% empty %}
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                                <p>No tienes archivos</p>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
                                     {% block box-content %}{% endblock %}
                                 {% endif%}
                             </div>

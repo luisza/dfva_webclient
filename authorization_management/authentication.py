@@ -20,7 +20,6 @@
 '''
 
 import json
-import logging
 from django.views.decorators.http import require_http_methods
 from django.http.response import JsonResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -32,8 +31,6 @@ from django.conf import settings
 from dfva_python.client import Client
 from .models import AuthenticateDataRequest
 from dfva_sign_file.models import FileSign
-
-logger = logging.getLogger(settings.DEFAULT_LOGGER_NAME)
 
 
 def call_login(identification):

@@ -9,5 +9,6 @@ class FileSign(models.Model):
     reason = models.CharField(max_length=125, blank=True, null=True)
     place = models.CharField(max_length=150, blank=True, null=True)
     sign_document = models.TextField(blank=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True)
     uploaded = models.ForeignKey(FileUpload, null=False, blank=False, on_delete=models.CASCADE)
 

@@ -10,9 +10,7 @@ def home(request):
 
 def logout_view(request):
     if 'authenticatedata' in request.session:
-        sessionkey = request.session['authenticatedata']
-        authdata = AuthenticateDataRequest.objects.filter(pk=sessionkey)
-        authdata.delete()
+        request.session.pop('authenticatedata')
 
     logout(request)
     return redirect('home')
