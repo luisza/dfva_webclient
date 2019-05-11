@@ -8,31 +8,51 @@
     <script src="{% static 'js/jquery.fileupload.js' %}"></script>
     <!-- Calculate md5 -->
     <script src="{% static 'js/spark-md5.js' %}"></script>
+    <style>
+        .upload-help{
+          text-align: center;
+          font-family: Arial;
+        }
+        #dfva-file-upload{
+          display:None;
+        }
+        .dropZone{
+          border: 2px dashed #bbb;
+          -webkit-border-radius: 5px;
+          border-radius: 5px;
+          padding: 50px;
+          text-align: center;
+          font: 21pt bold arial;
+          color: #bbb;
+        }
+    </style>
 {% endblock %}
 {% block title %}
     <a> Cargado de archivo</a>
 {% endblock %}
 
 {% block content %}
-  <div id="upload_form">
-      <form>
+  <div id="container_form" >
+       <p> Este formulario le permitirá cargar el archivo para realizar la firma.
+           Selecciones un archivo y luego presione Upload para continuar con el
+           siguiente paso de firmado.
+       </p>
+      <form class="form-upload">
           {% csrf_token %}
-          <p> Este formulario le permitirá cargar el archivo para realizar la firma.
-              Selecciones un archivo y luego presione Upload para continuar con el
-              siguiente paso de firmado.</p>
-          <div class="custom-file">
-            <label for="chunked_upload" class="custom-file-label" for="chunked_upload">Seleccione un archivo</label>
-            <input  id="chunked_upload" name="fva_file" type="file" class="custom-file-input">
+          <input  id="dfva-file-upload" name="fva_file"  type="file" >
+          <div class="dropZone">
+              <p class="upload-help">Suelta un archivo aquí o presiona esta área.</p>
+              <p class="upload-filename"></p>
           </div>
           <div class="form-group">
               <div class="progress">
-                  <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progressbar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
           </div>
-          <hr class="mb-4">
-      <div class="form-group">
-        <div class="form-row upload-form-actions"></div>
-      </div>
+           <hr class="mb-4">
+           <div class="form-group">
+                <div class="form-row upload-form-actions"></div>
+           </div>
       </form>
   </div>
 {% endblock %}
@@ -49,38 +69,38 @@
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
     function update_status_bar(progress){
-        var status_tag = $('.progress-bar');
+        var status_tag = $('.progressbar');
         status_tag.css('width', progress + "%");
         status_tag.text(progress + "%");
     };
     function add_cancel_action(data){
         $(".upload-form-actions").empty();
         $(".upload-form-actions").append($('#template-cancel-upload').text());
+        $("#dfva_file_upload").attr("disabled", true);
         $('.upload-form-actions .cancel-action').click(function(e) {
-             data.abort();
-             $(".upload-form-actions").empty();
-             update_status_bar(0);
+            data.abort();
+            update_status_bar(0);
+            $(".upload-form-actions").empty();
+            $(".dropZone .upload-filename").empty();
+            $('#dfva_file-upload').removeAttr("disabled");
         });
     };
     function add_upload_action(data){
         var btn_actions = $(".upload-form-actions");
         btn_actions.empty();
         btn_actions.append($('#template-upload').text());
+        $(".dropZone .upload-filename").html(data.files[0].name);
         $('.upload-form-actions .upload-action').click(function(e) {
             data.submit();
             add_cancel_action(data);
         });
     };
-    function add_sign_action(data){
-        var btn_actions = $(".upload-form-actions");
-        btn_actions.empty();
-        btn_actions.append($('#template-sign').text());
-    };
-    $("#chunked_upload").fileupload({
+    $("#dfva-file-upload").fileupload({
           url: "{% url 'dfva_uploading' %}",
           dataType: "json",
           maxChunkSize: 100000, // Chunks of 100 kB
           formData: form_data,
+           dropZone: $('.dropZone'),
           add: function(e, data) { // Called before starting upload
             form_data.splice(1);
             calculate_md5(data.files[0], 100000);
@@ -137,5 +157,10 @@
       };
       read_next_chunk();
     }
+    $(function() {
+        $('.dropZone').click(function( e ) {
+            $('#dfva-file-upload').trigger('click');
+        });
+    });
   </script>
 {% endblock %}

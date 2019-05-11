@@ -15,4 +15,9 @@ VALIDATE_FORMAT = {'contrafirma': 'xml_contrafirma',
 class FileUpload(ChunkedUpload):
     def get_content_type(self):
         content_type, _ = mimetypes.guess_type(self.filename)
-        return content_type
+        return content_type or 'application/xml'
+
+    def get_sign_format(self):
+        filename, file_extend = self.filename.rsplit('.', 1)
+        return VALIDATE_FORMAT.get(file_extend, file_extend)
+

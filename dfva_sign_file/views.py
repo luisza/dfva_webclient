@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from dfva_upload.models import FileUpload, VALIDATE_FORMAT
+from dfva_upload.models import FileUpload
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import FileSign
@@ -9,7 +9,7 @@ from .models import FileSign
 
 
 @login_required
-def manage_resume_view(request, fileid):
+def manage_resume(request, fileid):
     file_uploaded = get_object_or_404(FileUpload, upload_id=fileid, user=request.user)
     if request.method == 'GET':
         filename = file_uploaded.filename.lower()
@@ -22,7 +22,6 @@ def manage_resume_view(request, fileid):
                                                    'file_sign': last_resume})
 
     elif request.method == 'POST':
-        file_extend = file_uploaded.filename.rsplit('.', 1)[1]
         resume = request.POST.get("resume")
         reason = request.POST.get("reason", None)
         place = request.POST.get("place", None)
@@ -32,7 +31,7 @@ def manage_resume_view(request, fileid):
                                        resume=resume,
                                        reason=reason,
                                        place=place,
-                                       format=VALIDATE_FORMAT.get(file_extend, file_extend)
+                                       format=file_uploaded.get_sign_format()
                                        )
 
         return redirect(reverse('file_sign', kwargs={'fileid': fileid}))
@@ -70,8 +69,9 @@ def sign_document_download(request, fileid):
     if request.method == 'GET':
         file_sign = FileSign.objects.filter(uploaded__upload_id=fileid,
                                             uploaded__user=request.user).latest('updated_on')
-        if file_sign and file_sign.sign_document:
-            file_data = 'data:{0};base64,{1}'.format(file_sign.uploaded.get_content_type(), file_sign.sign_document)
-            return HttpResponse(file_data)
-        return redirect(reverse('file_sign', kwargs={'fileid': fileid}))
+        # when the file hasn't a sign_document it should be signed before
+        if file_sign:
+            if not file_sign.sign_document:
+                file_data = 'data:{0};base64,{1}'.format(file_sign.uploaded.get_content_type(), file_sign.sign_document)
+                return HttpResponse(file_data)
     raise Http404()
