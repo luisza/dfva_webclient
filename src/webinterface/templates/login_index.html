@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+
+{% block title %}{% trans "DFVA Login" %} {% endblock %}
+
+{% block content %}
+<br><br>
+<div class="row justify-content-md-center">
+	<div class="col-md-auto">
+		<div class="card " style="width: 25rem;">
+
+			<div class="card-body tab-content">
+
+				<div class="tab-pane fade show active" id="fd" role="tabpanel" aria-labelledby="fd-tab">
+					<img class="card-img-top" width="18em" src="{% static 'Imagenes/Firma.png' %}"
+						alt="{% trans 'Digital signature logo' %}"> <br>
+					<br>
+					<h5 class="card-title">{% trans "Login with digital signature" %}</h5>
+					<br>
+					<button class="btn btn-primary" id="BotonDeAutenticar"
+						data-fva="true" data-url="{% url 'login_fd' %}"
+						data-urlconsultafirma="{% url 'consute_firma' %}"
+						data-dominio="{{ request.scheme }}://{{ request.get_host }}"
+						data-successurl="{% if next %}{{next}}{% else %}/{% endif %}"
+						data-parautenticarse="al Sitio de Verificaci&oacute;n"
+						data-mensajedeerror="No se pudo realizar la autenticaci&oacute;n en el sitio de verificaci&oacute;n."
+						type="button" class="botonVerificacion botonVerificacion-Inicio">
+						{% trans "Login" %}</button>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<br>
+{% endblock %}
+
+
+{% block javascript_extra %}
+
+    <script src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
+    <script src="{% static 'js/Bccr.Fva.ClienteInterno.Firmador-1.0.3-min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/autenticador-1.0.3-min.js' %}"></script>
+{% endblock %}

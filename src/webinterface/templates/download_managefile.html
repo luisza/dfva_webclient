@@ -1,0 +1,17 @@
+{% extends 'managefile.html' %}
+{% load static %}
+
+{% block tabdescarga %}
+<br><br>
+<div class="alert alert-success" role="alert">
+    Felicidades su documento ha sido firmado, puede proceder con la descarga
+</div>
+      <form method="POST"  action="{% url 'direct_download_file' %}">
+        <input type="hidden" value="{{fileid}}" name="file_id" id="file_id">
+      {% csrf_token %}
+                <input type="submit" class="btn btn-success " value="Descagar" name="descargar" />
+      </form>
+
+{% endblock %}
+
+

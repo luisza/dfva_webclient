@@ -1,0 +1,26 @@
+.bg-light  {
+    background-color: #41ADE7!important;
+}
+
+.nav-link{
+    color: #fff !important;
+}
+
+a {
+    font-family: Arial, sans-serif;
+    color: #0090D8;
+    text-decoration: none;
+}
+
+.footer {
+    background-color: #666666;
+
+}
+
+footer .card-footer, footer .card-footer a {
+    color: #fff!important;
+}
+
+#logintab {
+    background-color: burlywood;
+}

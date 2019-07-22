@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<h2> ¿Qué desea realizar con {{fileuploaded.filename}}? </h2>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link {% if tabactive == 'firmar' %} active {% endif %}" id="firma-tab" data-toggle="tab" href="#firma"
+       role="tab" aria-controls="firma" aria-selected="{% if tabactive == 'firmar' %} true {% else %} false {% endif %}">Firma</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if tabactive == 'validar' %} active {% endif %}" id="valida-tab" data-toggle="tab" href="#valida"
+       role="tab" aria-controls="profile" aria-selected="{% if tabactive == 'validar' %} true {% else %} false {% endif %}">Valida</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if tabactive == 'descargar' %} active {% endif %}" id="descarga-tab" data-toggle="tab" href="#descarga"
+       role="tab" aria-controls="descarga" aria-selected="{% if tabactive == 'descargar' %} true {% else %} false {% endif %}">Descarga</a>
+  </li>
+      <li class="nav-item">
+    <a class="nav-link {% if tabactive == 'eliminar' %} active {% endif %}" id="elimina-tab" data-toggle="tab" href="#elimina"
+       role="tab" aria-controls="elimina" aria-selected="{% if tabactive == 'eliminar' %} true {% else %} false {% endif %}">
+        Elimina</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade {% if tabactive == 'firmar' %} show active {% endif %}" id="firma" role="tabpanel" aria-labelledby="firma-tab">
+    {% block tabfirma %}
+
+      <form method="POST"  action="{% url 'sign_file' %}">
+          <div class="table-responsive">
+              <table class="table">
+          {{signform}}
+                  <tr>
+                      <td>{% csrf_token %}</td><td>
+          <input type="submit" value="Firmar" name="Firmar" />
+                      </td>
+                  </tr>
+              </table>
+          </div>
+      </form>
+      {% endblock %}
+  </div>
+  <div class="tab-pane fade {% if tabactive == 'validar' %} show active {% endif %}" id="valida" role="tabpanel" aria-labelledby="valida-tab">
+      {% block tabvalida %}
+      <br><br>
+      <table class="table">
+      <form method="POST"  action="{% url 'validate_file' %}">
+      {{validateform}}
+
+                            <tr>
+                      <td>{% csrf_token %}</td><td>
+        <input type="submit" value="Validar" name="Validar" />
+                      </td>
+                  </tr>
+
+
+      </form>
+      </table>
+      {% endblock %}
+  </div>
+  <div class="tab-pane fade {% if tabactive == 'descargar' %} show active {% endif %}" id="descarga" role="tabpanel" aria-labelledby="descarga-tab">
+    {% block tabdescarga %}
+      <br><br>
+            <form method="POST"  action="{% url 'direct_download_file' %}">
+             <input type="hidden" value="{{fileid}}" name="file_id" id="val_file_id">
+            {% csrf_token %}
+                <input type="submit" class="btn btn-success " value="Descagar" name="descargar" />
+      </form>
+
+      {% endblock %}
+  </div>
+    <div class="tab-pane fade {% if tabactive == 'eliminar' %} show active {% endif %}" id="elimina" role="tabpanel" aria-labelledby="elimina-tab">
+      {% block tabeliminar %}
+      <br><br>
+      <div class="alert alert-success">¿Está seguro que desea eliminar este documento ?</div>
+            <form method="POST"  action="{% url 'delete_uploaded_file' fileid %}">
+                <input type="hidden" value="{{fileid}}" name="file_id" id="file_id">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success " value="Eliminar" name="eliminar" />
+             </form>
+      {% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% load i18n static %}
+<html>
+<head>
+    {% block title_outer %}
+        <title>{% block title %}Sitio de firmado y validación {% endblock %}</title>
+    {% endblock %}
+
+    {% block meta %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{% static 'css/bootstrap_4.1.1.min.css' %}" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/bootstrap_4.1.1.theme.css' %}" >
+        <link rel="stylesheet" href="{% static 'css/fontawesome_v5.0.13.css' %}" >
+        <style>
+        footer{
+        	margin-top: 20px;
+        }
+        </style>
+
+    {% endblock %}
+
+	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+
+<body class="hold-transition skin-blue sidebar-mini {% block body_class %}{% block bodyclass %}{% endblock %}{% endblock %}">
+
+{% block body %}
+    <div class="wrapper">
+        {% block nav_header %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">DFVA Sistema de firma y validación de documentos</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+{% if user.is_authenticated %}
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+    </ul>
+      <ul class="navbar-nav my-2 my-lg-0">
+                <li class="nav-item">
+            <a class="nav-link " href="{% url 'logout' %}" tabindex="-1" aria-disabled="true">Salir</a>
+          </li>
+      </ul>
+
+  </div>
+    {% endif %}
+</nav>
+
+        {% endblock %}
+    </div>
+                {% block content_block_wrap %}
+                <div class="container">
+                    {% block content %}{% endblock %}
+                </div>
+                {% endblock %}
+
+        {% block nav_footer %}
+  <footer class="footer">
+  <div class="card-footer text-muted text-center">
+   		<span > &copy; DFVA  {% now 'Y' %}</span>
+  </div>
+  </footer>
+        {% endblock nav_footer %}
+{% endblock body %}
+
+    {% block javascript %}
+<script src="{% static 'js/popper_1.14.3.min.js' %}" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="{% static 'js/bootstrap.4.1.1.min.js' %}" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    {% endblock %}
+
+{% block extra_foot %}{% endblock %}
+{% block javascript_extra %}{% endblock %}
+
+
+</body>
+</html>
