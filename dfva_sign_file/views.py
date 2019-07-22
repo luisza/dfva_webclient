@@ -7,7 +7,6 @@ from dfva_python.client import Client
 
 def manage_resume_view(request, fileid):
     file_uploaded = get_object_or_404(FileUpload, upload_id=fileid)
-    print(file_uploaded.__dict__)
     if request.method == 'GET':
         render_view = "fva_resume_form.html"  # default form template
         # # pdf special form

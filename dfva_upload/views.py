@@ -1,10 +1,16 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic.base import TemplateView
-from django.core.urlresolvers import reverse
+
 # Create your views here.
 
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from .models import FileUpload
 
+@login_required
+def index(request):
+    return render(request, 'index.html')
 
 class UploadForm(TemplateView):
     template_name = 'dfva_upload_form.html'
