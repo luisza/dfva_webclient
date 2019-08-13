@@ -95,3 +95,6 @@ ENV/
 
 # IDE
 .idea/
+chunked_uploads/
+db.sqlite3
+
