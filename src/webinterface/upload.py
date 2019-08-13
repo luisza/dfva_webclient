@@ -52,7 +52,8 @@ def delete_uploaded_file(request, fileid):
                                  'doc_format': file_uploaded.get_extension()})
     validateform = ValidateForm(initial={'file_id': fileid,
                                          'doc_format': file_uploaded.get_extension()})
-    return render(request, 'managefile.html', context={'fileid': fileid, 'tabactive': 'descargar',
+    return render(request, 'managefile.html', context={'fileid': fileid,
+                                                       'tabactive': 'eliminar',
                                                        'signform': signform,
                                                        'validateform': validateform,
                                                        'fileuploaded': file_uploaded})

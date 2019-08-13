@@ -8,7 +8,7 @@
             data-fva="true" data-url="{% url 'sign_terms_document' signbaseid %}"
             data-urlconsultafirma="{% url 'termsigned_check' signbaseid  %}"
             data-dominio="{{ request.scheme }}://{{ request.get_host }}"
-            data-successurl="{% url 'download_file' sign_managefile.html %}"
+            data-successurl="{% url 'download_file' fileid %}"
             data-parautenticarse="al Sitio de Verificaci&oacute;n"
             data-mensajedeerror="No se pudo realizar la firma en el sitio de verificaci&oacute;n."
             > Firmar documento </button>

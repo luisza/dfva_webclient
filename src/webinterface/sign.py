@@ -25,6 +25,7 @@ def sign_terms_document(request, pk):
     data = client.sign(obj.identificacion, document, obj.resumen, _format=obj.doc_format,
                 place=obj.lugar, reason=obj.razon)
 
+    print(data)
     success = data['status'] == settings.DEFAULT_SUCCESS_BCCR
     obj.id_transaction = data['id_transaction']
     obj.save()
@@ -68,6 +69,7 @@ def termsigned_check(request, pk):
         )
     client = Client()
     response_check = client.sign_check(id_transaction)
+    print(response_check)
     status = response_check['status']
 
     status = response_check['status'] == settings.DEFAULT_SUCCESS_BCCR
