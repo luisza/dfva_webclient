@@ -80,6 +80,7 @@ def termsigned_check(request, pk):
         uploadedfile.update_file(File(io.BytesIO(b64decode(response_check['sign_document']))))
         signdata.signed = True
         signdata.save()
+        client.sign_delete(id_transaction)
     return HttpResponse(
         "%s(%s)" % (
             callback,
