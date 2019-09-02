@@ -36,6 +36,6 @@ def termsigned_check(request, pk)
 
 # Aspectos importantes 
 
-Este proyecto solo pretende mostrar cómo usar dfva_php, por lo que no detalla algunas particulares de seguridad, por ejemplo es recomendable
+Este proyecto solo pretende mostrar cómo usar dfva_python, por lo que no detalla algunas particulares de seguridad, por ejemplo es recomendable
 guardar variables de control en la sesión para prevenir que entes externos puedan consultar las transacciones.
 Además la información se almacena en disco y no en base de datos.    
